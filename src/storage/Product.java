@@ -89,6 +89,24 @@ public class Product {
         System.out.println("Product removed!");
     }
 
+    public static void updateProduct(int id, String name, String category, int stock, double price) {
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "UPDATE products SET name = ?, category = ?, stock = ?, price = ? WHERE id = ?";
+
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+
+            smt.setString(1, name);
+            smt.setString(2, category);
+            smt.setInt(3, stock);
+            smt.setFloat(4, (float) price);
+            smt.setInt(5, id);
+            smt.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println("Error! Failed to update product.");
+        }
+    }
+
 
     public static int getIdOfProduct(String name, Category category, int stock, double price) {
         int idDB = 0;

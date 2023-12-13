@@ -1,11 +1,8 @@
 package application;
 
-import application.utills.ConnectionDB;
 import storage.Category;
 import storage.Product;
 
-import javax.crypto.spec.PSource;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -48,7 +45,7 @@ public abstract class UI {
             } else if (ans == 2) {
                 scriptRemoveProduct(scan);
             } else if (ans == 3) {
-                // update
+                scriptUpdateProduct(scan);
             } else if (ans == 4) {
                 System.out.println();
                 printCatalog();
@@ -71,6 +68,53 @@ public abstract class UI {
             System.out.format("%-5s%-15s%-17s%-9s%-10s%n", product.getId(), product.getName(), product.getCategory(), product.getStock(), product.getPrice());
         }
         System.out.println();
+    }
+
+    public static void scriptUpdateProduct(Scanner scan) {
+        while (true) {
+            System.out.println("\n------------ Update Product ------------");
+            System.out.print("Id: ");
+            int id = scan.nextInt();
+
+            System.out.println("\nWaiting...\n");
+
+            Product product = Product.getProductFromId(id);
+            if (product.getName() == null) {
+                System.out.println("Invalid ID!");
+                continue;
+            }
+
+            System.out.println("Updating product of name: "+ product.getName());
+
+            System.out.print("Name: ");
+            String name = scan.next();
+
+            System.out.print("Category: ");
+            scan.nextLine();
+            String category = scan.next();
+
+            if (!isValidCategory(category)) {
+                System.out.println("\nInvalid Category!");
+                continue;
+            }
+
+            System.out.print("Stock: ");
+            int stock = scan.nextInt();
+
+            System.out.print("Price: ");
+            double price = scan.nextDouble();
+
+            System.out.println("\nWaiting...\n");
+
+            Product.updateProduct(id, name, category, stock, price);
+            System.out.println("\nProduct Updated!\n");
+
+            System.out.print("Want to update another?(y/N) ");
+            String ans = scan.next();
+            if (ans.equalsIgnoreCase("n")) {
+                break;
+            }
+        }
     }
 
     public static void scriptRemoveProduct(Scanner scan) {
