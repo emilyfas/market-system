@@ -10,12 +10,12 @@ public abstract class UI {
     public static void optionsMenu() {
         Scanner scan = new Scanner(System.in);
         while (true) {
-            System.out.println("------------ Menu Operations ------------");
+            System.out.println("\n------------ Menu Operations ------------");
             System.out.println("1. Products Operations");
             System.out.println("2. Accounts Operations");
             System.out.println("3. Purchase");
             System.out.println("0. Exit Program");
-            System.out.println("Insert an option: ");
+            System.out.print("Insert an option: ");
             int ans = scan.nextInt();
             if (ans == 1) {
                 productOperations(scan);
@@ -26,24 +26,23 @@ public abstract class UI {
         }
 
         scan.close();
-
     }
 
     public static void productOperations(Scanner scan){
         while (true) {
 
-            System.out.println("------------ Product Operations ------------");
+            System.out.println("\n------------ Product Operations ------------");
             System.out.println("1. Add Products");
             System.out.println("2. Remove Products");
             System.out.println("3. Print Catalog");
             System.out.println("0. Exit to 'Menu Operations'");
-            System.out.println("Insert an option: ");
+            System.out.print("Insert an option: ");
 
             int ans = scan.nextInt();
             if (ans == 1) {
                 scriptAddProduct(scan);
             } else if (ans == 2) {
-                // remove
+                scriptRemoveProduct(scan);
             } else if (ans == 3) {
                 // print
             } else if (ans == 0) {
@@ -54,21 +53,44 @@ public abstract class UI {
         }
     }
 
+    public static void scriptRemoveProduct(Scanner scan) {
+        while (true) {
+            System.out.println("\n------------ Remove Product ------------");
+            System.out.print("Id: ");
+            int id = scan.nextInt();
+
+            System.out.println("\nWaiting...\n");
+
+            Product product = Product.getProductFromId(id);
+            if (product.getName() == null) {
+                System.out.println("Invalid ID!");
+                continue;
+            }
+
+            System.out.println("Removing product of name: "+ product.getName());
+
+            Product.removeProductFromDataBase(id);
+
+            System.out.print("Want to remove another?(y/N) ");
+            String ans = scan.next();
+            if (ans.equalsIgnoreCase("n")) {
+                break;
+            }
+        }
+    }
+
     public static void scriptAddProduct(Scanner scan) {
         while (true) {
-            System.out.println("------------ Add Product ------------");
+            System.out.println("\n------------ Add Product ------------");
             System.out.print("Name: ");
             String name = scan.next();
-            //scan.next();
-            System.out.println(name);
 
             System.out.print("Category: ");
             scan.nextLine();
             String category = scan.next();
-            System.out.println(category);
 
             if (!isValidCategory(category)) {
-                System.out.println("Invalid Category!");
+                System.out.println("\nInvalid Category!");
                 continue;
             }
 
@@ -80,13 +102,19 @@ public abstract class UI {
 
             System.out.println("\nWaiting...\n");
             Product.addProductToDataBase(name, category, stock, price);
+
+            System.out.print("Want to add another?(y/N) ");
+            String ans = scan.next();
+            if (ans.equalsIgnoreCase("n")) {
+                break;
+            }
+
         }
     }
 
     private static boolean isValidCategory(String test) {
         test = test.toUpperCase();
         for (Category c : Category.values()) {
-            System.out.println(c.name());
             if (c.name().equals(test)) {
                 return true;
             }

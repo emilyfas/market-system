@@ -73,6 +73,21 @@ public class Product {
         System.out.println("Product added!");
     }
 
+    public static void removeProductFromDataBase(int id) {
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "DELETE FROM products WHERE id = ?";
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+            smt.setInt(1, id);
+            smt.executeUpdate();
+
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to remove product.");
+        }
+        System.out.println("Product removed!");
+    }
+
 
     public static int getIdOfProduct(String name, Category category, int stock, double price) {
         int idDB = 0;
