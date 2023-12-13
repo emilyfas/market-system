@@ -1,12 +1,17 @@
 package management;
 
+import application.utills.ConnectionDB;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 public abstract class User {
     private String name;
     private String mobile;
     private String email;
-    private long addressCode;
+    private String addressCode;
 
-    public User(String name, String mobile, String email, long addressCode) {
+    public User(String name, String mobile, String email, String addressCode) {
         this.name = name;
         this.mobile = mobile;
         this.email = email;
@@ -37,13 +42,15 @@ public abstract class User {
         this.email = email;
     }
 
-    public long getAddressCode() {
+    public String getAddressCode() {
         return addressCode;
     }
 
-    public void setAddressCode(long addressCode) {
+    public void setAddressCode(String addressCode) {
         this.addressCode = addressCode;
     }
+
+
 
     protected abstract boolean Login();
 

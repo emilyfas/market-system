@@ -1,20 +1,20 @@
 package management;
 
+import application.utills.ConnectionDB;
 import management.enums.Role;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class Admin extends User{
 
     private Role role;
     private double salary;
-    private String user;
-    private String password;
 
-    public Admin(String name, String mobile, String email, long addressCode, Role role, double salary, String user, String password) {
+    public Admin(String name, String mobile, String email, String addressCode, Role role, double salary) {
         super(name, mobile, email, addressCode);
         this.role = role;
         this.salary = salary;
-        this.user = user;
-        this.password = password;
     }
 
     public Role getRole() {
@@ -33,20 +33,23 @@ public class Admin extends User{
         this.salary = salary;
     }
 
-    public String getUser() {
-        return user;
-    }
+    public void SignIn(Admin admin) {
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "INSERT INTO admin (name, mobile, email, adressCode, role, salary) VALUES(?,?,?,?,?,?)";
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+            smt.setString(1, admin.getName());
+            smt.setString(2, admin.getMobile());
+            smt.setString(3, admin.getEmail());
+            smt.setString(4, admin.getAddressCode());
+            smt.setString(5, admin.getRole().toString());
+            smt.setDouble(6, admin.getSalary());
+            smt.executeUpdate();
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to sign in user.");
+        }
     }
 
     @Override
