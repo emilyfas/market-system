@@ -3,6 +3,7 @@ package storage;
 import application.utills.ConnectionDB;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Product {
 
@@ -141,6 +142,38 @@ public class Product {
             System.out.println("Error! Failed to get Product from id.");
         }
         return product;
+    }
+
+    public static ArrayList<Product> getAllProducts() {
+        ArrayList<Product> list = new ArrayList<>();
+
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "SELECT * FROM products";
+
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+
+            ResultSet resultSet = smt.executeQuery();
+            while (resultSet.next()) {
+                Product product = new Product();
+
+                product.setName(resultSet.getString("name"));
+
+                String categoryDb = resultSet.getString("category");
+                product.setCategory(Category.valueOf(categoryDb.toUpperCase()));
+
+                product.setPrice(resultSet.getFloat("price"));
+                product.stock = resultSet.getInt("stock");
+                product.id = resultSet.getInt("id");
+
+                list.add(product);
+            }
+
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to get Product from id.");
+        }
+        return list;
     }
 
     public static void addToStock(int n, Product p) {

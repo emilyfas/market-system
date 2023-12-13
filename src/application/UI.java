@@ -1,9 +1,12 @@
 package application;
 
+import application.utills.ConnectionDB;
 import storage.Category;
 import storage.Product;
 
 import javax.crypto.spec.PSource;
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class UI {
@@ -34,7 +37,8 @@ public abstract class UI {
             System.out.println("\n------------ Product Operations ------------");
             System.out.println("1. Add Products");
             System.out.println("2. Remove Products");
-            System.out.println("3. Print Catalog");
+            System.out.println("3. Update Product Information");
+            System.out.println("4. Print Catalog");
             System.out.println("0. Exit to 'Menu Operations'");
             System.out.print("Insert an option: ");
 
@@ -44,13 +48,29 @@ public abstract class UI {
             } else if (ans == 2) {
                 scriptRemoveProduct(scan);
             } else if (ans == 3) {
-                // print
+                // update
+            } else if (ans == 4) {
+                System.out.println();
+                printCatalog();
             } else if (ans == 0) {
                 break;
             } else{
                 System.out.println("Invalid Input!");
             }
         }
+    }
+
+    public static void printCatalog() {
+        ArrayList<Product> list = Product.getAllProducts();
+        System.out.format("%-5s%-15s%-17s%-9s%-10s%n", "Id", "Name", "Category", "Stock", "Price");
+
+
+        for (int i = 0; i < list.size(); i++) {
+            Product product = list.get(i);
+
+            System.out.format("%-5s%-15s%-17s%-9s%-10s%n", product.getId(), product.getName(), product.getCategory(), product.getStock(), product.getPrice());
+        }
+        System.out.println();
     }
 
     public static void scriptRemoveProduct(Scanner scan) {
