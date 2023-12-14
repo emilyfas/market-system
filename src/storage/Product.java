@@ -76,7 +76,7 @@ public class Product {
 
     public static void removeProductFromDataBase(int id) {
         Connection cnn = ConnectionDB.getConnection();
-        String sql = "DELETE FROM products WHERE id = ?";
+        String sql = "DELETE FROM products WHERE id_product = ?";
         try (PreparedStatement smt = cnn.prepareStatement(sql)) {
             smt.setInt(1, id);
             smt.executeUpdate();
@@ -91,7 +91,7 @@ public class Product {
 
     public static void updateProduct(int id, String name, String category, int stock, double price) {
         Connection cnn = ConnectionDB.getConnection();
-        String sql = "UPDATE products SET name = ?, category = ?, stock = ?, price = ? WHERE id = ?";
+        String sql = "UPDATE products SET name = ?, category = ?, stock = ?, price = ? WHERE id_product = ?";
 
         try (PreparedStatement smt = cnn.prepareStatement(sql)) {
 
@@ -107,11 +107,10 @@ public class Product {
         }
     }
 
-
     public static int getIdOfProduct(String name, Category category, int stock, double price) {
         int idDB = 0;
         Connection cnn = ConnectionDB.getConnection();
-        String sql = "SELECT id FROM products WHERE name = ? AND category = ? AND stock = ? AND price = ?";
+        String sql = "SELECT id_product FROM products WHERE name = ? AND category = ? AND stock = ? AND price = ?";
 
         try (PreparedStatement smt = cnn.prepareStatement(sql)) {
 
@@ -121,7 +120,7 @@ public class Product {
             smt.setFloat(4, (float) price);
             ResultSet resultSet = smt.executeQuery();
             while (resultSet.next()) {
-                idDB = resultSet.getInt("id");
+                idDB = resultSet.getInt("id_product");
             }
 
             smt.close();
@@ -136,7 +135,7 @@ public class Product {
         Product product = new Product();
 
         Connection cnn = ConnectionDB.getConnection();
-        String sql = "SELECT * FROM products WHERE id = ?";
+        String sql = "SELECT * FROM products WHERE id_product = ?";
 
         try (PreparedStatement smt = cnn.prepareStatement(sql)) {
 
@@ -181,7 +180,7 @@ public class Product {
 
                 product.setPrice(resultSet.getFloat("price"));
                 product.stock = resultSet.getInt("stock");
-                product.id = resultSet.getInt("id");
+                product.id = resultSet.getInt("id_product");
 
                 list.add(product);
             }
@@ -196,7 +195,7 @@ public class Product {
 
     public static void addToStock(int n, Product p) {
         Connection cnn = ConnectionDB.getConnection();
-        String sql = "UPDATE products SET stock = stock + ? WHERE id = ?";
+        String sql = "UPDATE products SET stock = stock + ? WHERE id_product = ?";
         try (PreparedStatement smt = cnn.prepareStatement(sql)) {
             smt.setInt(1, n);
             smt.setInt(2, p.id);
@@ -219,7 +218,7 @@ public class Product {
 
         Connection cnn = ConnectionDB.getConnection();
 
-        String sql = "UPDATE products SET stock = stock - ? WHERE id = ?";
+        String sql = "UPDATE products SET stock = stock - ? WHERE id_product = ?";
         try (PreparedStatement smt = cnn.prepareStatement(sql)) {
             Statement statement = cnn.createStatement();
 

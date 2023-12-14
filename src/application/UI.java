@@ -1,5 +1,7 @@
 package application;
 
+import management.Admin;
+import management.enums.Role;
 import storage.Category;
 import storage.Product;
 
@@ -7,25 +9,66 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class UI {
-    public static void optionsMenu() {
+
+    public static void optionsMenu(Admin admin) {
         Scanner scan = new Scanner(System.in);
         while (true) {
             System.out.println("\n------------ Menu Operations ------------");
             System.out.println("1. Products Operations");
-            System.out.println("2. Accounts Operations");
-            System.out.println("3. Purchase");
+            System.out.println("2. Purchase");
+            System.out.println("3. User Accounts Operations");
+            if (admin.getRole() == Role.MANAGER || admin.getRole() == Role.DEVELOPER) {
+                System.out.println("4. Admin Accounts Operations");
+            }
             System.out.println("0. Exit Program");
             System.out.print("Insert an option: ");
             int ans = scan.nextInt();
             if (ans == 1) {
                 productOperations(scan);
-            }else{
+            } else if (ans == 3) {
+                userAccountsOperations(scan);
+            } else if (ans == 4 && (admin.getRole() == Role.MANAGER || admin.getRole() == Role.DEVELOPER)){
+                adminAccountsOperations(scan);
+            }
+            else{
                 System.out.println("END");
                 break;
             }
         }
 
         scan.close();
+    }
+
+    public static void adminAccountsOperations(Scanner scan) {
+
+    }
+
+    public static void userAccountsOperations(Scanner scan){
+        while (true) {
+
+            System.out.println("\n------------ User Account Operations ------------");
+            System.out.println("1. Sign in user");
+            System.out.println("2. Remove user");
+            System.out.println("3. See user information");
+            System.out.println("4. See user orders");
+            System.out.println("0. Exit to 'Menu Operations'");
+            System.out.print("Insert an option: ");
+
+            int ans = scan.nextInt();
+            if (ans == 1) {
+                // sign in
+            } else if (ans == 2) {
+                // remove
+            } else if (ans == 3) {
+                // view info
+            } else if (ans == 4) {
+                // view order
+            } else if (ans == 0) {
+                break;
+            } else{
+                System.out.println("Invalid Input!");
+            }
+        }
     }
 
     public static void productOperations(Scanner scan){

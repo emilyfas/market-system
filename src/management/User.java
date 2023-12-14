@@ -9,13 +9,21 @@ public abstract class User {
     private String name;
     private String mobile;
     private String email;
+    private String password;
     private String addressCode;
 
-    public User(String name, String mobile, String email, String addressCode) {
+    public User(String name, String mobile, String email, String addressCode, String password) {
         this.name = name;
         this.mobile = mobile;
         this.email = email;
         this.addressCode = addressCode;
+        this.password = password;
+    }
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     public String getName() {
@@ -34,14 +42,6 @@ public abstract class User {
         this.mobile = mobile;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getAddressCode() {
         return addressCode;
     }
@@ -50,15 +50,14 @@ public abstract class User {
         this.addressCode = addressCode;
     }
 
-
-
-    protected abstract boolean Login();
-
-    @Override
-    public String toString() {
-        return "name='" + name + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", email='" + email + '\'' +
-                ", addressCode=" + addressCode;
+    public String getEmail() {
+        return email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    protected abstract boolean checkValidUser();
+
 }
