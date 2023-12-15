@@ -1,10 +1,5 @@
 package management;
 
-import application.utills.ConnectionDB;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
 public abstract class User {
 
     private int idUser;

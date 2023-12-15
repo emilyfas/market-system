@@ -86,7 +86,9 @@ public abstract class UI {
 
             System.out.println("Removing staff member of name: "+ staff.getName());
 
-            Staff.removeStaffFromDataBase(id);
+            if (confirmDeletion(scan)) {
+                Staff.removeStaffFromDataBase(id);
+            }
 
             System.out.print("Want to remove another?(y/N) ");
             String ans = scan.next();
@@ -308,7 +310,9 @@ public abstract class UI {
 
             System.out.println("Removing product of name: "+ product.getName());
 
-            Product.removeProductFromDataBase(id);
+            if (confirmDeletion(scan)) {
+                Product.removeProductFromDataBase(id);
+            }
 
             System.out.print("Want to remove another?(y/N) ");
             String ans = scan.next();
@@ -358,6 +362,19 @@ public abstract class UI {
             }
         }
         return false;
+    }
+
+    private static boolean confirmDeletion(Scanner scan) {
+        while (true) {
+            System.out.print("Confirm deletion(y/N): ");
+            String ans = scan.next();
+            if (ans.equalsIgnoreCase("y")) {
+                return true;
+            } else if (ans.equalsIgnoreCase("n")) {
+                System.out.println("\nProcess of deletion being canceled...\n");
+                return false;
+            }
+        }
     }
 
 }
