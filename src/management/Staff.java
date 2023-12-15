@@ -2,25 +2,24 @@ package management;
 
 import application.utills.ConnectionDB;
 import management.enums.Role;
-import storage.Category;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class Admin extends User{
+public class Staff extends User{
 
     private Role role;
     private double salary;
     private boolean loggedIn = false;
 
-    public Admin(String name, String mobile, String email, String addressCode, String password, Role role, double salary) {
+    public Staff(String name, String mobile, String email, String addressCode, String password, Role role, double salary) {
         super(name, mobile, email, addressCode, password);
         this.role = role;
         this.salary = salary;
     }
 
-    public Admin(String name, String email, String password) {
+    public Staff(String name, String email, String password) {
         super(name, email, password);
     }
 
@@ -54,6 +53,27 @@ public class Admin extends User{
         }
         setLoggedIn(true);
         System.out.println("User Logged! Welcome " + this.getName());
+    }
+
+    public static void addToStaffToDatabase(Staff staff) {
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "INSERT INTO admin (name, mobile, email, adressCode, role, salary, password) VALUES(?,?,?,?,?,?,?)";
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+            smt.setString(1, staff.getName());
+            smt.setString(2, staff.getMobile());
+            smt.setString(3, staff.getEmail());
+            smt.setString(4, staff.getAddressCode());
+            smt.setString(5, staff.getRole().toString());
+            smt.setDouble(6, staff.getSalary());
+            smt.setString(7, staff.getPassword());
+            smt.executeUpdate();
+
+            smt.close();
+            cnn.close();
+            System.out.println("Staff member added!");
+        } catch (Exception e) {
+            System.out.println("Error! Failed to add staff member.");
+        }
     }
 
     @Override

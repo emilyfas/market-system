@@ -1,13 +1,15 @@
 package application;
 
-import management.Admin;
-import storage.Product;
+import management.Staff;
 
+import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Program {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
 
         Scanner scan = new Scanner(System.in);
 
@@ -21,16 +23,15 @@ public class Program {
 
             System.out.println("\nWaiting...\n");
 
-            Admin admin = new Admin("", email, password);
-            admin.login();
+            Staff staff = new Staff("", email, password);
+            staff.login();
 
-            if (!admin.isLoggedIn()) {
+            if (!staff.isLoggedIn()) {
                 System.out.println("Invalid user! Try another Login.");
             } else {
-                UI.optionsMenu(admin);
+                UI.optionsMenu(staff);
                 break;
             }
         }
-
     }
 }
