@@ -6,12 +6,16 @@ import management.enums.Role;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class Staff extends User{
 
     private Role role;
     private double salary;
     private boolean loggedIn = false;
+
+    public Staff() {
+    }
 
     public Staff(String name, String mobile, String email, String addressCode, String password, Role role, double salary) {
         super(name, mobile, email, addressCode, password);
@@ -76,6 +80,82 @@ public class Staff extends User{
         }
     }
 
+    public static Staff getStaffFromId(int id) {
+        Staff staff = new Staff();
+
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "SELECT * FROM admin WHERE id_admin = ?";
+
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+
+            smt.setInt(1, id);
+
+            ResultSet resultSet = smt.executeQuery();
+            while (resultSet.next()) {
+                staff.setName(resultSet.getString("name"));
+                staff.setMobile(resultSet.getString("mobile"));
+                staff.setAddressCode("adressCode");
+                staff.setRole(Role.valueOf(resultSet.getString("role")));
+                staff.setSalary(resultSet.getDouble("salary"));
+                staff.setEmail(resultSet.getString("email"));
+                staff.setPassword(resultSet.getString("password"));
+                staff.setIdUser(id);
+            }
+
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to get Staff member from id.");
+        }
+        return staff;
+    }
+
+    public static ArrayList<Staff> getAllStaff() {
+        ArrayList<Staff> list = new ArrayList<>();
+
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "SELECT * FROM admin";
+
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+
+            ResultSet resultSet = smt.executeQuery();
+            while (resultSet.next()) {
+                Staff staff = new Staff();
+                staff.setIdUser(resultSet.getInt("id_admin"));
+                staff.setName(resultSet.getString("name"));
+                staff.setMobile(resultSet.getString("mobile"));
+                staff.setAddressCode(resultSet.getString("adressCode"));
+                staff.setRole(Role.valueOf(resultSet.getString("role")));
+                staff.setSalary(resultSet.getDouble("salary"));
+                staff.setEmail(resultSet.getString("email"));
+                staff.setPassword(resultSet.getString("password"));
+
+                list.add(staff);
+            }
+
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to get all Staff.");
+        }
+        return list;
+    }
+
+    public static void removeStaffFromDataBase(int id) {
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "DELETE FROM admin WHERE id_admin = ?";
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+            smt.setInt(1, id);
+            smt.executeUpdate();
+
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to remove staff member.");
+        }
+        System.out.println("Staff member removed!");
+    }
+
     @Override
     protected boolean checkValidUser() {
         boolean ans = false;
@@ -87,6 +167,7 @@ public class Staff extends User{
 
             ResultSet resultSet = smt.executeQuery();
             while (resultSet.next()) {
+                this.setIdUser(resultSet.getInt("id_admin"));
                 this.setName(resultSet.getString("name"));
                 this.setMobile(resultSet.getString("mobile"));
                 this.setAddressCode("adressCode");
@@ -101,5 +182,30 @@ public class Staff extends User{
             System.out.println("Error! Invalid user.");
         }
         return ans;
+    }
+
+    @Override
+    protected int getIdOfUserFromDataBase(String name, String email, String password) {
+        int idDB = 0;
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "SELECT id_admin FROM admin WHERE name = ? AND email = ? AND password = ?";
+
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+
+            smt.setString(1, name);
+            smt.setString(2, email);
+            smt.setString(3, password);
+
+            ResultSet resultSet = smt.executeQuery();
+            while (resultSet.next()) {
+                idDB = resultSet.getInt("id_admin");
+            }
+
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to get ID.");
+        }
+        return idDB;
     }
 }

@@ -188,7 +188,7 @@ public class Product {
             smt.close();
             cnn.close();
         } catch (Exception e) {
-            System.out.println("Error! Failed to get Product from id.");
+            System.out.println("Error! Failed to get all Products.");
         }
         return list;
     }

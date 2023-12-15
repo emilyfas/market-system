@@ -55,11 +55,11 @@ public abstract class UI {
             if (ans == 1) {
                 scriptAddStaff(scan);
             } else if (ans == 2) {
-
+                scriptRemoveStaff(scan);
             } else if (ans == 3) {
 
             } else if (ans == 4) {
-
+                printStaffMembers();
             } else if (ans == 5) {
 
             } else if (ans == 0) {
@@ -70,7 +70,33 @@ public abstract class UI {
         }
     }
 
-    public static void scriptAddStaff(Scanner scan) {
+    private static void scriptRemoveStaff(Scanner scan) {
+        while (true) {
+            System.out.println("\n------------ Remove Satff Member ------------");
+            System.out.print("Id: ");
+            int id = scan.nextInt();
+
+            System.out.println("\nWaiting...\n");
+
+            Staff staff = Staff.getStaffFromId(id);
+            if (staff.getName() == null) {
+                System.out.println("Invalid ID!");
+                continue;
+            }
+
+            System.out.println("Removing staff member of name: "+ staff.getName());
+
+            Staff.removeStaffFromDataBase(id);
+
+            System.out.print("Want to remove another?(y/N) ");
+            String ans = scan.next();
+            if (ans.equalsIgnoreCase("n")) {
+                break;
+            }
+        }
+    }
+
+    private static void scriptAddStaff(Scanner scan) {
         while (true) {
             System.out.println("\n------------ Add Staff Member ------------");
             System.out.print("Name: ");
@@ -115,7 +141,7 @@ public abstract class UI {
         }
     }
 
-    public static String getValidPassword(Scanner scan) {
+    private static String getValidPassword(Scanner scan) {
         while (true) {
             System.out.print("Password: ");
             scan.nextLine();
@@ -130,7 +156,7 @@ public abstract class UI {
         }
     }
 
-    public static boolean isValidRole(String test) {
+    private static boolean isValidRole(String test) {
         test = test.toUpperCase();
         for (Role c : Role.values()) {
             if (c.name().equals(test)) {
@@ -140,7 +166,7 @@ public abstract class UI {
         return false;
     }
 
-    public static void userAccountsOperations(Scanner scan){
+    private static void userAccountsOperations(Scanner scan){
         while (true) {
 
             System.out.println("\n------------ User Account Operations ------------");
@@ -168,7 +194,18 @@ public abstract class UI {
         }
     }
 
-    public static void productOperations(Scanner scan){
+    private static void printStaffMembers() {
+        ArrayList<Staff> list = Staff.getAllStaff();
+        System.out.format("%-4s%-25s%-20s%-12s%-17s%-10s%-25s%-15s%n", "Id", "Name", "Mobile", "Role", "Adress Code", "Salary", "Email", "Password");
+
+
+        for (Staff staff : list) {
+            System.out.format("%-4s%-25s%-20s%-12s%-17s%-10s%-25s%-15s%n", staff.getIdUser(), staff.getName(), staff.getMobile(), staff.getRole(), staff.getAddressCode(), staff.getSalary(), staff.getEmail(), staff.getPassword());
+        }
+        System.out.println();
+    }
+
+    private static void productOperations(Scanner scan){
         while (true) {
 
             System.out.println("\n------------ Product Operations ------------");
@@ -197,20 +234,18 @@ public abstract class UI {
         }
     }
 
-    public static void printCatalog() {
+    private static void printCatalog() {
         ArrayList<Product> list = Product.getAllProducts();
         System.out.format("%-5s%-15s%-17s%-9s%-10s%n", "Id", "Name", "Category", "Stock", "Price");
 
 
-        for (int i = 0; i < list.size(); i++) {
-            Product product = list.get(i);
-
+        for (Product product : list) {
             System.out.format("%-5s%-15s%-17s%-9s%-10s%n", product.getId(), product.getName(), product.getCategory(), product.getStock(), product.getPrice());
         }
         System.out.println();
     }
 
-    public static void scriptUpdateProduct(Scanner scan) {
+    private static void scriptUpdateProduct(Scanner scan) {
         while (true) {
             System.out.println("\n------------ Update Product ------------");
             System.out.print("Id: ");
@@ -257,7 +292,7 @@ public abstract class UI {
         }
     }
 
-    public static void scriptRemoveProduct(Scanner scan) {
+    private static void scriptRemoveProduct(Scanner scan) {
         while (true) {
             System.out.println("\n------------ Remove Product ------------");
             System.out.print("Id: ");
@@ -283,7 +318,7 @@ public abstract class UI {
         }
     }
 
-    public static void scriptAddProduct(Scanner scan) {
+    private static void scriptAddProduct(Scanner scan) {
         while (true) {
             System.out.println("\n------------ Add Product ------------");
             System.out.print("Name: ");

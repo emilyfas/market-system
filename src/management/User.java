@@ -6,11 +6,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public abstract class User {
+
+    private int idUser;
     private String name;
     private String mobile;
     private String email;
     private String password;
     private String addressCode;
+
+    public User() {
+    }
 
     public User(String name, String mobile, String email, String addressCode, String password) {
         this.name = name;
@@ -18,6 +23,7 @@ public abstract class User {
         this.email = email;
         this.addressCode = addressCode;
         this.password = password;
+        this.idUser = getIdOfUserFromDataBase(name,email,password);
     }
 
     public User(String name, String email, String password) {
@@ -54,10 +60,27 @@ public abstract class User {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
     protected abstract boolean checkValidUser();
+    protected abstract int getIdOfUserFromDataBase(String name, String email, String password);
 
 }
