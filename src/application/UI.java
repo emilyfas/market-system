@@ -25,6 +25,8 @@ public abstract class UI {
             int ans = scan.nextInt();
             if (ans == 1) {
                 productOperations(scan);
+            } else if (ans == 2) {
+                // purchaseOperations(scan);
             } else if (ans == 3) {
                 userAccountsOperations(scan);
             } else if (ans == 4 && (staff.getRole() == Role.MANAGER || staff.getRole() == Role.DEVELOPER)){
@@ -57,17 +59,60 @@ public abstract class UI {
             } else if (ans == 2) {
                 scriptRemoveStaff(scan);
             } else if (ans == 3) {
-
+                scriptUpdateStaff(scan);
             } else if (ans == 4) {
                 printStaffMembers();
             } else if (ans == 5) {
-
+                scriptSearchStaff(scan);
             } else if (ans == 0) {
                 break;
             } else{
                 System.out.println("Invalid Input!");
             }
         }
+    }
+
+    private static void scriptSearchStaff(Scanner scan) {
+        System.out.println("\n------------ Search Staff Member ------------");
+        while(true) {
+            System.out.print("Staff id: ");
+            int id = scan.nextInt();
+            if (!isValidStaffId(id)) {
+                System.out.println("Invalid staff id!");
+                continue;
+            }
+
+            Staff staff = Staff.getStaffFromId(id);
+            System.out.format("%-4s%-25s%-20s%-12s%-17s%-10s%-25s%-15s%n", "Id", "Name", "Mobile", "Role", "Adress Code", "Salary", "Email", "Password");
+            printStaffMember(staff);
+
+            System.out.print("Want to search another?(y/N) ");
+            String ans = scan.next();
+            if (ans.equalsIgnoreCase("n")) {
+                break;
+            }
+        }
+    }
+    private static void scriptUpdateStaff(Scanner scan) {
+        System.out.println("\n------------ Update Staff Member ------------");
+        while(true) {
+            System.out.print("Id: ");
+            int id = scan.nextInt();
+            if (!isValidStaffId(id)) {
+                System.out.println("Invalid staff id!");
+                continue;
+            }
+
+            Staff staff = createStaff(scan);
+            staff.updateStaffInDataBase(id);
+
+            System.out.print("Want to update another?(y/N) ");
+            String ans = scan.next();
+            if (ans.equalsIgnoreCase("n")) {
+                break;
+            }
+        }
+
     }
 
     private static void scriptRemoveStaff(Scanner scan) {
@@ -79,7 +124,8 @@ public abstract class UI {
             System.out.println("\nWaiting...\n");
 
             Staff staff = Staff.getStaffFromId(id);
-            if (staff.getName() == null) {
+
+            if (!isValidStaffId(id)) {
                 System.out.println("Invalid ID!");
                 continue;
             }
@@ -88,6 +134,7 @@ public abstract class UI {
 
             if (confirmDeletion(scan)) {
                 Staff.removeStaffFromDataBase(id);
+                System.out.println("Staff member removed!");
             }
 
             System.out.print("Want to remove another?(y/N) ");
@@ -98,42 +145,20 @@ public abstract class UI {
         }
     }
 
+    private static boolean isValidStaffId(int id) {
+        Staff staff = Staff.getStaffFromId(id);
+        return staff.getName() != null;
+    }
+
     private static void scriptAddStaff(Scanner scan) {
         while (true) {
             System.out.println("\n------------ Add Staff Member ------------");
-            System.out.print("Name: ");
-            String name = scan.next();
 
-            System.out.print("Mobile: ");
-            scan.nextLine();
-            String mobile = scan.nextLine();
-
-            System.out.print("Email: ");
-            String email = scan.next();
-
-            System.out.print("Adress Code: ");
-            scan.nextLine();
-            String adressCode = scan.next();
-
-            String role = "";
-            while (true) {
-                System.out.print("Role: ");
-                scan.nextLine();
-                role = scan.next();
-
-                if (isValidRole(role)) {
-                    break;
-                }
-                System.out.println("\nInvalid Role!");
-            }
-
-            System.out.print("Salary: ");
-            double salary = scan.nextDouble();
-
-            String password = getValidPassword(scan);
+            Staff staff = createStaff(scan);
 
             System.out.println("\nWaiting...\n");
-            Staff.addToStaffToDatabase(new Staff(name, mobile, email, adressCode, password, Role.valueOf(role), salary));
+
+            Staff.addToStaffToDatabase(staff);
 
             System.out.print("Want to add another?(y/N) ");
             String ans = scan.next();
@@ -141,6 +166,41 @@ public abstract class UI {
                 break;
             }
         }
+    }
+
+    private static Staff createStaff(Scanner scan) {
+        System.out.print("Name: ");
+        String name = scan.next();
+
+        System.out.print("Mobile: ");
+        scan.nextLine();
+        String mobile = scan.nextLine();
+
+        System.out.print("Email: ");
+        String email = scan.next();
+
+        System.out.print("Adress Code: ");
+        scan.nextLine();
+        String adressCode = scan.next();
+
+        String role = "";
+        while (true) {
+            System.out.print("Role: ");
+            scan.nextLine();
+            role = scan.next().toUpperCase();
+
+            if (isValidRole(role)) {
+                break;
+            }
+            System.out.println("\nInvalid Role!");
+        }
+
+        System.out.print("Salary: ");
+        double salary = scan.nextDouble();
+
+        String password = getValidPassword(scan);
+
+        return new Staff(name, mobile, email, adressCode, password, Role.valueOf(role), salary);
     }
 
     private static String getValidPassword(Scanner scan) {
@@ -200,11 +260,14 @@ public abstract class UI {
         ArrayList<Staff> list = Staff.getAllStaff();
         System.out.format("%-4s%-25s%-20s%-12s%-17s%-10s%-25s%-15s%n", "Id", "Name", "Mobile", "Role", "Adress Code", "Salary", "Email", "Password");
 
-
         for (Staff staff : list) {
-            System.out.format("%-4s%-25s%-20s%-12s%-17s%-10s%-25s%-15s%n", staff.getIdUser(), staff.getName(), staff.getMobile(), staff.getRole(), staff.getAddressCode(), staff.getSalary(), staff.getEmail(), staff.getPassword());
+            printStaffMember(staff);
         }
         System.out.println();
+    }
+
+    private static void printStaffMember(Staff staff) {
+        System.out.format("%-4s%-25s%-20s%-12s%-17s%-10s%-25s%-15s%n", staff.getIdUser(), staff.getName(), staff.getMobile(), staff.getRole(), staff.getAddressCode(), staff.getSalary(), staff.getEmail(), staff.getPassword());
     }
 
     private static void productOperations(Scanner scan){

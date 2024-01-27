@@ -153,7 +153,27 @@ public class Staff extends User{
         } catch (Exception e) {
             System.out.println("Error! Failed to remove staff member.");
         }
-        System.out.println("Staff member removed!");
+    }
+
+    public void updateStaffInDataBase(int id) {
+        Connection cnn = ConnectionDB.getConnection();
+        String sql = "UPDATE admin SET name = ?, mobile = ?, email = ?, adressCode = ?, role = ?, salary = ?, password = ?  WHERE id_admin = ?";
+        try (PreparedStatement smt = cnn.prepareStatement(sql)) {
+            smt.setString(1, this.getName());
+            smt.setString(2, this.getMobile());
+            smt.setString(3, this.getEmail());
+            smt.setString(4, this.getAddressCode());
+            smt.setString(5, this.getRole().toString());
+            smt.setDouble(6, this.getSalary());
+            smt.setString(7, this.getPassword());
+            smt.setInt(8, id);
+            smt.executeUpdate();
+
+            smt.close();
+            cnn.close();
+        } catch (Exception e) {
+            System.out.println("Error! Failed to update staff member.");
+        }
     }
 
     @Override
